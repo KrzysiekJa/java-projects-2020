@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CarShowroom {
+
     public CarShowroom(String name, int capacity) {
         this.name = name;
         this.capacity = capacity;
@@ -30,11 +31,10 @@ public class CarShowroom {
             Integer i = vehicleMap.get(vehicle);
             if (--i == 0) {
                 vehicleMap.remove(vehicle);
-                --amount;
             } else {
                 vehicleMap.replace(vehicle, i);
-                --amount;
             }
+            --amount;
         }
     }
 
@@ -118,8 +118,9 @@ public class CarShowroom {
         return name;
     }
 
+
     private final String name;
-    private HashMap<Vehicle, Integer> vehicleMap = new HashMap<Vehicle, Integer>();
+    private HashMap<Vehicle, Integer> vehicleMap = new HashMap<>();
     private final int capacity;
     private int amount = 0;
 }

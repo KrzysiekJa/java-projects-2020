@@ -9,8 +9,8 @@ public class CarShowroomContainer {
     public CarShowroomContainer() {
     }
 
-    public void addCenter(String name, CarShowroom showroom) {
-        showrooms.put(name, showroom);
+    public void addCenter(CarShowroom showroom) {
+        showrooms.put(showroom.getName(), showroom);
     }
 
     public void removeCenter(String name) {

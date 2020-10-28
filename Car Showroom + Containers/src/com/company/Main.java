@@ -26,6 +26,8 @@ public class Main {
         speed.addProduct(car3);
 
         System.out.println("Max of SpeedDe:" + speed.max());
+        System.out.println("Searching: " + speed.search("Seria 3").getModel() + "\n");
+        System.out.println("Used cars: " + speed.countByCondition(E_ItemCondition.USED));
         speed.summary();
 
 
@@ -62,16 +64,16 @@ public class Main {
 
 
         CarShowroomContainer showrooms = new CarShowroomContainer();
-        showrooms.addCenter(speed.getName(), speed);
-        showrooms.addCenter(american.getName(), american);
-        showrooms.addCenter(newCar.getName(), newCar);
+        showrooms.addCenter(speed);
+        showrooms.addCenter(american);
+        showrooms.addCenter(newCar);
+        CarShowroom newer = new CarShowroom("New One", 20);
+        showrooms.addCenter(newer);
 
         System.out.println("Summary:");
-        showrooms.removeCenter(newCar.getName());
         showrooms.summary();
 
-        CarShowroom newer = new CarShowroom("New One", 20);
-        showrooms.addCenter(newer.getName(), newer);
-        System.out.println(showrooms.findEmpty());
+        System.out.println("Empty showrooms: " + showrooms.findEmpty());
+        showrooms.removeCenter(newCar.getName());
     }
 }
