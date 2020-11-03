@@ -3,41 +3,134 @@ package com.company.SortingAlgorithms;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Tests {
+
+    private final long[] rawTab = {6, 12, 201, 8, 55, 321, 7, 37, 1001, 1};
+    private final long[] sortedTab = rawTab.clone();
+    Random random = new Random();
+    private final long[] timeTab = random.longs(10000, 0, 10000).toArray();
+    private I_SortingAlgorithm algorithm;
+
+
     @Test
-    @DisplayName("It should return sorted arrays.")
-    public void shouldReturnSortedArray() {
-        long[] rawTab = {6, 12, 201, 8, 55, 321, 7, 37, 1001, 1};
-        I_SortingAlgorithm algorithm = new InsertionSort();
-        long[] sortedTab = rawTab.clone();
+    @DisplayName("Methods should return sorted arrays.")
+    public void InsertionSortShouldReturnSortedArray() {
+        algorithm = new InsertionSort();
         long[] testingTab = rawTab.clone();
         Arrays.sort(sortedTab);
-
         algorithm.sort(testingTab);
         assertArrayEquals(sortedTab, testingTab);
+    }
 
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingInsertionSortRuntime() {
+        algorithm = new InsertionSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+    @Test
+    @DisplayName("Methods should return sorted arrays.")
+    public void bubbleSortShouldReturnSortedArray() {
         algorithm = new BubbleSort();
-        testingTab = rawTab.clone();
+        long[] testingTab = rawTab.clone();
+        Arrays.sort(sortedTab);
         algorithm.sort(testingTab);
         assertArrayEquals(sortedTab, testingTab);
+    }
 
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingBubbleSortRuntime() {
+        algorithm = new BubbleSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+    @Test
+    @DisplayName("Methods should return sorted arrays.")
+    public void shellSortShouldReturnSortedArray() {
         algorithm = new ShellSort();
-        testingTab = rawTab.clone();
+        long[] testingTab = rawTab.clone();
+        Arrays.sort(sortedTab);
         algorithm.sort(testingTab);
         assertArrayEquals(sortedTab, testingTab);
+    }
 
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingShellSortRuntime() {
+        algorithm = new ShellSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+    @Test
+    @DisplayName("Methods should return sorted arrays.")
+    public void cocktailSortShouldReturnSortedArray() {
         algorithm = new CocktailSort();
-        testingTab = rawTab.clone();
+        long[] testingTab = rawTab.clone();
+        Arrays.sort(sortedTab);
         algorithm.sort(testingTab);
         assertArrayEquals(sortedTab, testingTab);
+    }
 
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingCocktailSortRuntime() {
+        algorithm = new CocktailSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+    @Test
+    @DisplayName("Methods should return sorted arrays.")
+    public void selectionSortShouldReturnSortedArray() {
         algorithm = new SelectionSort();
-        testingTab = rawTab.clone();
+        long[] testingTab = rawTab.clone();
+        Arrays.sort(sortedTab);
         algorithm.sort(testingTab);
         assertArrayEquals(sortedTab, testingTab);
+    }
+
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingSelectionSortRuntime() {
+        algorithm = new SelectionSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+    @Test
+    @DisplayName("Methods should return sorted arrays.")
+    public void quickSortShouldReturnSortedArray() {
+        algorithm = new QuickSort();
+        long[] testingTab = rawTab.clone();
+        Arrays.sort(sortedTab);
+        algorithm.sort(testingTab);
+        assertArrayEquals(sortedTab, testingTab);
+    }
+
+    @Test
+    @DisplayName("Testing timeout of function.")
+    public void testingQuickSortRuntime() {
+        algorithm = new QuickSort();
+        assertTimeout(Duration.ofMillis(1000), () -> algorithm.sort(timeTab));
+    }
+
+
+
+    @Test
+    @DisplayName("Testing run() function work.")
+    public void testingMainFunction() {
+        SortingAlgorithms algorithm = new SortingAlgorithms();
+        assertNull(algorithm.run());
     }
 }

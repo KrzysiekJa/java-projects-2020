@@ -31,7 +31,7 @@ public class Spot {
         throw new NoSolutionException("No such pair of numbers for " + target);
     }
 
-    public void run() {
+    public Object run() {
         int[] tab = new int[10000];
         int target = 100;
 
@@ -50,5 +50,7 @@ public class Spot {
 
         System.out.println("Looking for: " + target);
         System.out.println("Points : " + results[0] + " " + results[1]);
+
+        return null;
     }
 }

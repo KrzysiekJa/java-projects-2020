@@ -55,7 +55,7 @@ public class Spiral {
     }
 
 
-    public void run() {
+    public Object run() {
         int[][] tab = {
                 { 1,  2,  3,  4,  5},
                 { 6,  7,  8,  9, 10},
@@ -78,5 +78,7 @@ public class Spiral {
         for (int elem : results) {
             System.out.print(elem + " ");
         }
+
+        return null;
     }
 }

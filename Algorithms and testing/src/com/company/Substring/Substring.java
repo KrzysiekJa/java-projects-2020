@@ -27,7 +27,7 @@ public class Substring {
         return -1;
     }
 
-    public void run() {
+    public Object run() {
         String string = "abcd";
         String substring = "cdabcdab";
         int result = 0;
@@ -39,5 +39,7 @@ public class Substring {
         }
 
         System.out.println("For string :" + string + " substring :" + substring + " find after " + result + " addition of string.");
+
+        return null;
     }
 }

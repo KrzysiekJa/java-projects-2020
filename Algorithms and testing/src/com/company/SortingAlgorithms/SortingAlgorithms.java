@@ -1,9 +1,11 @@
 package com.company.SortingAlgorithms;
 
+import org.junit.jupiter.api.function.Executable;
+
 import java.util.Random;
 
 public class SortingAlgorithms {
-    public void run() {
+    public Executable run() {
         long[] randomTab = new long[100000];
         long[] optimalTab = new long[100000];
         long[] pessimisticTab = new long[100000];
@@ -146,5 +148,6 @@ public class SortingAlgorithms {
         System.out.println("Selection sort:");
         System.out.println(elapsedSecondsRandom + " " + elapsedSecondsOptimal + " " + elapsedSecondsPessimistic);
 
+        return null;
     }
 }

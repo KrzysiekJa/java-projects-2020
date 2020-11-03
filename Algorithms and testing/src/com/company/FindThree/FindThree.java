@@ -31,7 +31,7 @@ public class FindThree {
         return result;
     }
 
-    public void run() {
+    public Object run() {
         int[] tab = new int[1000];
         Random generator = new Random();
 
@@ -50,5 +50,7 @@ public class FindThree {
 
         System.out.println("Looking for maximum value of sum of integers.");
         System.out.println("The best trio :" + results[0] + " " + results[1] + " " + results[2]);
+
+        return null;
     }
 }
