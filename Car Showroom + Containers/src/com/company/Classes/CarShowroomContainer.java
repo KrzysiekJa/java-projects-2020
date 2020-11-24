@@ -1,6 +1,7 @@
-package com.company.classes;
+package com.company.Classes;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +38,6 @@ public class CarShowroomContainer {
     }
 
 
-    public HashMap<String, CarShowroom> showrooms = new HashMap<>();
+    public Map<String, CarShowroom> showrooms = new HashMap<>();
 
 }

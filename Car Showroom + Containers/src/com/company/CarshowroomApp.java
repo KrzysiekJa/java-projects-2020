@@ -1,16 +1,27 @@
 package com.company;
 
-import com.company.classes.CarShowroom;
-import com.company.classes.CarShowroomContainer;
-import com.company.classes.E_ItemCondition;
-import com.company.classes.Vehicle;
+import com.company.Classes.CarShowroom;
+import com.company.Classes.CarShowroomContainer;
+import com.company.Classes.E_ItemCondition;
+import com.company.Classes.Vehicle;
 
+import javax.swing.*;
 import java.util.stream.Collectors;
 
-public class Main {
+public class CarshowroomApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        SwingUtilities.invokeLater(() -> {
+            CarShowroomGUI gui = new CarShowroomGUI();
+            gui.setVisible(true);
+        });
 
+
+        /*
+         * Code from previous laboratory- terminal one- focused on using containers,
+         * that gives source code for gui app.
+         *
         Vehicle car1 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 20000, 2007, 350000., 40.0);
         Vehicle car2 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 27000, 2015, 200000, 35.3);
         Vehicle car3 = new Vehicle("Mercedes", "A3", E_ItemCondition.USED, 35000, 2010, 250000.4, 38.2);
@@ -25,7 +36,7 @@ public class Main {
         speed.addProduct(car5);
         speed.addProduct(car3);
 
-        System.out.println("Max of SpeedDe:" + speed.max());
+        System.out.println("Max amount of SpeedDe:" + speed.max());
         System.out.println("Searching: " + speed.search("Seria 3").getModel() + "\n");
         System.out.println("Used cars: " + speed.countByCondition(E_ItemCondition.USED));
         speed.summary();
@@ -47,18 +58,21 @@ public class Main {
         american.addProduct(car14);
         american.addProduct(car14);
         american.addProduct(car15);
-        american.removeProduct(american.search("Hammve"));
-        american.removeProduct(american.search("Fiesta"));
+        american.removeProduct("Hammve");
+        american.removeProduct("Fiesta");
 
-        System.out.println("\n\nMax of SpeedDe:" + american.max());
+        System.out.println("\nMax amount of SpeedDe:" + american.max());
         american.summary();
         System.out.println(american.sortByName().stream().map(Vehicle::getModel).collect(Collectors.toList()));
 
 
+        Vehicle maluch = new Vehicle("Fiat", "Maluch", E_ItemCondition.DAMAGED, 1000, 1988, 550000, 31.5);
+        Vehicle panda = new Vehicle("Fiat", "Panda", E_ItemCondition.USED, 1000, 2008, 250000, 41.5);
         CarShowroom newCar = new CarShowroom("New Car", 25);
+        newCar.addProduct(maluch);
         newCar.addProduct(new Vehicle("Fiat", "Maluch", E_ItemCondition.DAMAGED, 1000, 1988, 550000, 31.5));
-        newCar.addProduct(new Vehicle("Fiat", "Panda", E_ItemCondition.USED, 1000, 2008, 250000, 41.5));
-        System.out.println("Sorting New Car by amount: " + newCar.sortByAmount());
+        newCar.addProduct(panda);
+        System.out.println("\nSorting New Car by amount: " + newCar.sortByAmount());
         newCar.getProduct(american.search("Maluch"));
         System.out.println(" ");
 
@@ -73,7 +87,11 @@ public class Main {
         System.out.println("Summary:");
         showrooms.summary();
 
+
+        newCar.removeProduct("Maluch");
+        newCar.removeProduct("Panda");
         System.out.println("Empty showrooms: " + showrooms.findEmpty());
         showrooms.removeCenter(newCar.getName());
+        */
     }
 }

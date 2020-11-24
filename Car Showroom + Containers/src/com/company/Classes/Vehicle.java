@@ -1,4 +1,4 @@
-package com.company.classes;
+package com.company.Classes;
 
 public class Vehicle implements Comparable<Vehicle> {
 
@@ -25,12 +25,32 @@ public class Vehicle implements Comparable<Vehicle> {
         return this.model.compareTo(o.model);
     }
 
+    public String getMark() {
+        return mark;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getProductionYear() {
+        return productionYear;
+    }
+
+    public double getMileage() {
+        return mileage;
+    }
+
     public String getModel() {
         return model;
     }
 
     public E_ItemCondition getState() {
         return state;
+    }
+
+    public double getEngineCapacity() {
+        return engineCapacity;
     }
 
     private final String mark;

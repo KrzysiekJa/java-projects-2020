@@ -1,4 +1,4 @@
-package com.company.classes;
+package com.company.Classes;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -17,12 +17,16 @@ public class CarShowroom {
             --amount;
             System.err.println("The capacity of car showroom has been exceeded.");
         }
-        if (vehicleMap.containsKey(product)) {
-            Integer i = vehicleMap.get(product);
-            vehicleMap.replace(product, ++i);
-        } else {
-            vehicleMap.put(product, 1);
+
+        for (Vehicle elem : vehicleMap.keySet()) {
+            if (product.compareTo(elem) == 0) {
+                Integer i = vehicleMap.get(elem);
+                vehicleMap.replace(elem, ++i);
+                return;
+            }
         }
+
+        vehicleMap.put(product, 1);
     }
 
     public void getProduct(Vehicle vehicle) {
@@ -38,11 +42,16 @@ public class CarShowroom {
         }
     }
 
-    public void removeProduct(Vehicle vehicle) {
+    public void removeProduct(String model) {
 
-        if (vehicleMap.containsKey(vehicle)) {
-            amount -= vehicleMap.get(vehicle);
-            vehicleMap.remove(vehicle);
+        Comparator<String> compareStrings = Comparator.naturalOrder();
+
+        for (Vehicle i : vehicleMap.keySet()) {
+            if (compareStrings.compare(i.getModel(), model) == 0) {
+                amount -= vehicleMap.get(i);
+                vehicleMap.remove(i);
+                return;
+            }
         }
     }
 
@@ -52,7 +61,7 @@ public class CarShowroom {
 
         for (Vehicle i : vehicleMap.keySet()) {
 
-            if (compareStrings.compare(model, i.getModel()) > 0) {
+            if (compareStrings.compare(i.getModel(), model) > 0) {
                 return i;
             }
         }
@@ -118,9 +127,12 @@ public class CarShowroom {
         return name;
     }
 
+    public Set<Vehicle> getVehicleMapSet() {
+        return vehicleMap.keySet();
+    }
 
     private final String name;
-    private HashMap<Vehicle, Integer> vehicleMap = new HashMap<>();
+    private final Map<Vehicle, Integer> vehicleMap = new HashMap<>();
     private final int capacity;
     private int amount = 0;
 }
