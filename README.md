@@ -1,6 +1,6 @@
 ## Included projects in repo:
 ```
 - terminal calculator,
-- showrooms simulator,
-- typical work on algorithms,
+- showrooms simulator + swing interface,
+- work on algorithms and java testing,
 ```

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="548.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CarShop.Controller">
+   <children>
+      <TableView fx:id="upperTable" layoutX="28.0" layoutY="14.0" prefHeight="247.0" prefWidth="408.0">
+        <columns>
+          <TableColumn fx:id="showroomUpper" prefWidth="84.0" text="Showroom" />
+          <TableColumn fx:id="markUpper" prefWidth="71.0" text="Mark" />
+            <TableColumn fx:id="modelUpper" prefWidth="75.0" text="Model" />
+            <TableColumn fx:id="priceUpper" prefWidth="74.0" text="Price" />
+            <TableColumn fx:id="productionYearUpper" prefWidth="103.0" text="Production year" />
+        </columns>
+      </TableView>
+      <TableView fx:id="lowerTable" layoutX="28.0" layoutY="281.0" prefHeight="247.0" prefWidth="408.0">
+        <columns>
+          <TableColumn fx:id="showroomLower" prefWidth="85.0" text="Showroom" />
+          <TableColumn fx:id="markLower" prefWidth="70.0" text="Mark" />
+            <TableColumn fx:id="modelLower" prefWidth="75.0" text="Model" />
+            <TableColumn fx:id="priceLower" prefWidth="74.0" text="Price" />
+            <TableColumn fx:id="productionYearLower" prefWidth="103.0" text="Production year" />
+        </columns>
+      </TableView>
+      <ComboBox fx:id="showroomComboBox" layoutX="472.0" layoutY="14.0" onAction="#onActionShowroomComboBox" prefHeight="27.0" prefWidth="161.0" />
+      <TextField fx:id="modelTextField" layoutX="472.0" layoutY="58.0" promptText="Model name" />
+      <Button fx:id="searchButton" layoutX="524.0" layoutY="101.0" mnemonicParsing="false" onMouseClicked="#searchButtonOnClicked" text="Search" />
+      <ComboBox fx:id="sortComboBox" layoutX="472.0" layoutY="161.0" prefHeight="27.0" prefWidth="161.0" />
+      <Button fx:id="sortButton" layoutX="532.0" layoutY="203.0" mnemonicParsing="false" onMouseClicked="#sortButtonOnClicked" text="Sort" />
+      <Button fx:id="buyButton" layoutX="593.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#buyButtonOnClicked" text="Buy" />
+      <Button fx:id="reservationButton" layoutX="472.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#reservationButtonOnClicked" text="Reservation" />
+   </children>
+</AnchorPane>
