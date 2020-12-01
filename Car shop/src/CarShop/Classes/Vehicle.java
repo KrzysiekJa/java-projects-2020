@@ -64,7 +64,7 @@ public class Vehicle implements Comparable<Vehicle> {
     private String carShowroom;
     private final String mark;
     private final String model;
-    private final E_ItemCondition state;
+    private transient final E_ItemCondition state;
     private final double price;
     private final int productionYear;
     private final double mileage;

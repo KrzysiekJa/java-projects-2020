@@ -3,6 +3,7 @@ package CarShop;
 import CarShop.Classes.CarShowroom;
 import CarShop.Classes.E_ItemCondition;
 import CarShop.Classes.Vehicle;
+import CarShop.Exceptions.WorkOnFileException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,9 +20,11 @@ import java.util.Objects;
 
 public class Controller {
 
-
+    public Tooltip upperTooltip;
+    public Tooltip lowerTooltip;
     private List<CarShowroom> showroomsList;
     private List<Vehicle> reservations;
+    private List<Vehicle> soldVehicles = new ArrayList<>();
     @FXML
     public TextField modelTextField;
     @FXML
@@ -51,6 +55,8 @@ public class Controller {
     private ComboBox<String> showroomComboBox;
     @FXML
     private ComboBox<String> sortComboBox;
+    @FXML
+    private ComboBox<String> IOComboBox;
 
 
     public void onActionShowroomComboBox(ActionEvent actionEvent) {
@@ -112,6 +118,7 @@ public class Controller {
         for (CarShowroom showroom : showroomsList) {
             for (Vehicle veh : showroom.getVehicleMapSet()) {
                 if (Objects.equals(text, veh.getModel()) && !reservations.contains(veh)) {
+                    //soldVehicles.add(veh);
                     showroom.removeProduct(veh.getModel());
                     break;
                 }
@@ -133,9 +140,95 @@ public class Controller {
     }
 
 
+    public void onClickedSaveButton(MouseEvent mouseEvent) throws WorkOnFileException {
+        String text = IOComboBox.getValue();
+        String filename = "iofile.txt";
+
+        if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
+            try {
+                FileOutputStream file = new FileOutputStream(filename);
+                ObjectOutputStream out = new ObjectOutputStream(file);
+
+                out.writeObject(soldVehicles);
+
+                out.close();
+                file.close();
+
+            } catch (IOException exception) {
+                exception.getStackTrace();
+                throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+            }
+        }
+        for (CarShowroom showroom : showroomsList) {
+            if (Objects.equals(text, showroom.getName())) {
+                try {
+                    FileOutputStream file = new FileOutputStream(filename);
+                    ObjectOutputStream out = new ObjectOutputStream(file);
+
+                    out.writeObject(showroom);
+
+                    out.close();
+                    file.close();
+
+                } catch (IOException exception) {
+                    exception.getStackTrace();
+                    throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+                }
+                break;
+            }
+        }
+    }
+
+    public void onClickedReadButton(MouseEvent mouseEvent) throws WorkOnFileException {
+        String text = IOComboBox.getValue();
+        String filename = "iofile.txt";
+
+        if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
+            List<Vehicle> vehiclesList;
+            try {
+                FileInputStream file = new FileInputStream(filename);
+                ObjectInputStream in = new ObjectInputStream(file);
+
+                vehiclesList = (List<Vehicle>) in.readObject();
+
+                in.close();
+                file.close();
+
+            } catch (IOException | ClassNotFoundException exception) {
+                exception.getStackTrace();
+                throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+            }
+        }
+        for (CarShowroom showroom : showroomsList) {
+            if (Objects.equals(text, showroom.getName())) {
+                try {
+                    FileInputStream file = new FileInputStream(filename);
+                    ObjectInputStream in = new ObjectInputStream(file);
+
+                    showroom = (CarShowroom) in.readObject();
+
+                    in.close();
+                    file.close();
+
+                } catch (IOException | ClassNotFoundException exception) {
+                    exception.getStackTrace();
+                    throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+                }
+                break;
+            }
+        }
+    }
+
+    public void onClickedExportButton(MouseEvent mouseEvent) {
+    }
+
+    public void onClickedImportButton(MouseEvent mouseEvent) {
+    }
+
+
     @FXML
     public void initialize() {
-        // objects
+        /* objects */
         Vehicle car1 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 20000, 2007, 350000., 40.0);
         Vehicle car2 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 27000, 2015, 200000, 35.3);
         Vehicle car3 = new Vehicle("Mercedes", "A3", E_ItemCondition.USED, 35000, 2010, 250000.4, 38.2);
@@ -170,24 +263,21 @@ public class Controller {
         newCar.addProduct(maluch);
         newCar.addProduct(panda);
 
+        /* for tooltip */
+        upperTable.setRowFactory(tableview -> {
+            final TableRow<Vehicle> row = new TableRow<>();
 
-        upperTable.setRowFactory(tv -> new TableRow<Vehicle>() {
-            private Tooltip tooltip = new Tooltip();
+            row.hoverProperty().addListener((observable -> {
+                final Vehicle veh = row.getItem();
 
-            @Override
-            public void updateItem(Vehicle veh, boolean empty) {
-                super.updateItem(veh, empty);
-                if (veh == null) {
-                    setTooltip(null);
-                } else {
-                    tooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
-                    setTooltip(tooltip);
+                if(row.isHover() && veh != null){
+                    upperTooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
                 }
-            }
+            }));
+            return row;
         });
 
         lowerTable.setRowFactory(tv -> new TableRow<Vehicle>() {
-            private Tooltip tooltip = new Tooltip();
 
             @Override
             public void updateItem(Vehicle veh, boolean empty) {
@@ -195,8 +285,8 @@ public class Controller {
                 if (veh == null) {
                     setTooltip(null);
                 } else {
-                    tooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
-                    setTooltip(tooltip);
+                    lowerTooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
+                    setTooltip(lowerTooltip);
                 }
             }
         });
@@ -204,16 +294,18 @@ public class Controller {
         showroomsList = new ArrayList<>(Arrays.asList(speed, american, newCar));
         reservations = new ArrayList<>();
 
-        // combo boxes
-        List<String> listShowroomsNames = new ArrayList<>(Arrays.asList("Default", speed.getName(), american.getName(), newCar.getName()));
-        ObservableList observableList = FXCollections.observableList(listShowroomsNames);
+        /* combo boxes */
+        ObservableList observableList = FXCollections.observableList(Arrays.asList("Default", speed.getName(), american.getName(), newCar.getName()));
         showroomComboBox.getItems().clear();
         showroomComboBox.setItems(observableList);
         observableList = FXCollections.observableList(Arrays.asList("Model", "Price", "Production year"));
         sortComboBox.getItems().clear();
         sortComboBox.setItems(observableList);
+        observableList = FXCollections.observableList(Arrays.asList("Bought", speed.getName(), american.getName(), newCar.getName()));
+        IOComboBox.getItems().clear();
+        IOComboBox.setItems(observableList);
 
-        // table columns
+        /* table columns */
         showroomUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("carShowroom"));
         markUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("mark"));
         modelUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("model"));
@@ -226,4 +318,5 @@ public class Controller {
         productionYearLower.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("productionYear"));
 
     }
+
 }
