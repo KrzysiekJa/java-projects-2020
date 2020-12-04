@@ -1,9 +1,13 @@
 package CarShop.Classes;
 
-public class Vehicle implements Comparable<Vehicle> {
+import java.io.Serializable;
+
+@VehicleAnnatation(carShowroom = "", mark = "", model = "", price = 0.0, productionYear = 0, mileage = 0.0, engineCapacity = 0.0)
+public class Vehicle implements Comparable<Vehicle>, Serializable {
 
     public Vehicle(String mark, String model, E_ItemCondition state, double price, int productionYear,
                    double mileage, double engineCapacity) {
+        super();
         this.mark = mark;
         this.model = model;
         this.state = state;
@@ -59,6 +63,20 @@ public class Vehicle implements Comparable<Vehicle> {
 
     public double getEngineCapacity() {
         return engineCapacity;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "carShowroom='" + carShowroom + '\'' +
+                ", mark='" + mark + '\'' +
+                ", model='" + model + '\'' +
+                ", state=" + state +
+                ", price=" + price +
+                ", productionYear=" + productionYear +
+                ", mileage=" + mileage +
+                ", engineCapacity=" + engineCapacity +
+                '}';
     }
 
     private String carShowroom;

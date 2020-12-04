@@ -1,12 +1,14 @@
 package CarShop.Classes;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CarShowroom {
+public class CarShowroom implements Serializable {
 
     public CarShowroom(String name, int capacity) {
+        super();
         this.name = name;
         this.capacity = capacity;
     }
@@ -130,6 +132,15 @@ public class CarShowroom {
 
     public Set<Vehicle> getVehicleMapSet() {
         return vehicleMap.keySet();
+    }
+
+    public int getVehicleAmount(Vehicle veh){
+        return vehicleMap.getOrDefault(veh, 0);
+    }
+
+    @Override
+    public String toString() {
+        return "CarShowroom{" + "name='" + name + '\'' + ", vehicleMap=" + vehicleMap + ", capacity=" + capacity + ", amount=" + amount + '}';
     }
 
     private final String name;

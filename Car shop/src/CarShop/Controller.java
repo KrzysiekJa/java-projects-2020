@@ -6,11 +6,9 @@ import CarShop.Classes.Vehicle;
 import CarShop.Exceptions.WorkOnFileException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,8 +20,8 @@ public class Controller {
 
     public Tooltip upperTooltip;
     public Tooltip lowerTooltip;
-    private List<CarShowroom> showroomsList;
-    private List<Vehicle> reservations;
+    private final List<CarShowroom> showroomsList = new ArrayList<>();
+    private final List<Vehicle> reservations = new ArrayList<>();
     private List<Vehicle> soldVehicles = new ArrayList<>();
     @FXML
     public TextField modelTextField;
@@ -59,7 +57,7 @@ public class Controller {
     private ComboBox<String> IOComboBox;
 
 
-    public void onActionShowroomComboBox(ActionEvent actionEvent) {
+    public void onActionShowroomComboBox() {
         upperTable.getItems().clear();
         String text = showroomComboBox.getValue();
 
@@ -78,7 +76,7 @@ public class Controller {
         }
     }
 
-    public void searchButtonOnClicked(MouseEvent mouseEvent) {
+    public void searchButtonOnClicked() {
         lowerTable.getItems().clear();
         String text = modelTextField.getText();
 
@@ -91,7 +89,7 @@ public class Controller {
         }
     }
 
-    public void sortButtonOnClicked(MouseEvent mouseEvent) {
+    public void sortButtonOnClicked() {
         upperTable.getSortOrder().clear();
         String text = sortComboBox.getValue();
 
@@ -112,21 +110,22 @@ public class Controller {
         }
     }
 
-    public void buyButtonOnClicked(MouseEvent mouseEvent) {
+    public void buyButtonOnClicked() {
         String text = modelTextField.getText();
 
         for (CarShowroom showroom : showroomsList) {
             for (Vehicle veh : showroom.getVehicleMapSet()) {
                 if (Objects.equals(text, veh.getModel()) && !reservations.contains(veh)) {
-                    //soldVehicles.add(veh);
+                    soldVehicles.add(veh);
                     showroom.removeProduct(veh.getModel());
                     break;
                 }
             }
         }
+        onActionShowroomComboBox();
     }
 
-    public void reservationButtonOnClicked(MouseEvent mouseEvent) {
+    public void reservationButtonOnClicked() {
         String text = modelTextField.getText();
 
         for (CarShowroom showroom : showroomsList) {
@@ -140,7 +139,7 @@ public class Controller {
     }
 
 
-    public void onClickedSaveButton(MouseEvent mouseEvent) throws WorkOnFileException {
+    public void onClickedSaveButton() throws WorkOnFileException {
         String text = IOComboBox.getValue();
         String filename = "iofile.txt";
 
@@ -172,24 +171,23 @@ public class Controller {
 
                 } catch (IOException exception) {
                     exception.getStackTrace();
-                    throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+                    throw new WorkOnFileException("Problems with loading the file " + filename, exception);
                 }
                 break;
             }
         }
     }
 
-    public void onClickedReadButton(MouseEvent mouseEvent) throws WorkOnFileException {
+    public void onClickedReadButton() throws WorkOnFileException {
         String text = IOComboBox.getValue();
         String filename = "iofile.txt";
 
         if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
-            List<Vehicle> vehiclesList;
             try {
                 FileInputStream file = new FileInputStream(filename);
                 ObjectInputStream in = new ObjectInputStream(file);
 
-                vehiclesList = (List<Vehicle>) in.readObject();
+                soldVehicles = (List) in.readObject();
 
                 in.close();
                 file.close();
@@ -205,12 +203,82 @@ public class Controller {
                     FileInputStream file = new FileInputStream(filename);
                     ObjectInputStream in = new ObjectInputStream(file);
 
+                    showroomsList.remove(showroom);
                     showroom = (CarShowroom) in.readObject();
+                    showroomsList.add(showroom);
 
                     in.close();
                     file.close();
 
                 } catch (IOException | ClassNotFoundException exception) {
+                    exception.getStackTrace();
+                    throw new WorkOnFileException("Problems with loading the file " + filename, exception);
+                }
+                break;
+            }
+        }
+    }
+
+    public void onClickedExportButton() throws WorkOnFileException {
+        String text = IOComboBox.getValue();
+        String filename = "iocsv.csv";
+        String carShowroom, mark, model, price, productionYear, mileage, engineCapacity;
+
+        if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
+            try {
+                PrintWriter writer = new PrintWriter(filename);
+                writer.close();
+                FileWriter file = new FileWriter(filename, true);
+                BufferedWriter buffer = new BufferedWriter(file);
+                writer = new PrintWriter(buffer);
+
+                for (Vehicle veh : soldVehicles) {
+                    carShowroom = veh.getCarShowroom();
+                    mark = veh.getMark();
+                    model = veh.getModel();
+                    price = Double.toString(veh.getPrice());
+                    productionYear = Integer.toString(veh.getProductionYear());
+                    mileage = Double.toString(veh.getMileage());
+                    engineCapacity = Double.toString(veh.getEngineCapacity());
+
+                    writer.println("0," + carShowroom + "," + mark + "," + model + "," + price + "," + productionYear + "," + mileage + "," + engineCapacity);
+                }
+
+                writer.flush();
+                writer.close();
+                file.close();
+
+            } catch (IOException exception) {
+                exception.getStackTrace();
+                throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+            }
+        }
+        for (CarShowroom showroom : showroomsList) {
+            if (Objects.equals(text, showroom.getName())) {
+                try {
+                    PrintWriter writer = new PrintWriter(filename);
+                    writer.close();
+                    FileWriter file = new FileWriter(filename, true);
+                    BufferedWriter buffer = new BufferedWriter(file);
+                    writer = new PrintWriter(buffer);
+
+                    for (Vehicle veh : showroom.getVehicleMapSet()) {
+                        carShowroom = veh.getCarShowroom();
+                        mark = veh.getMark();
+                        model = veh.getModel();
+                        price = Double.toString(veh.getPrice());
+                        productionYear = Integer.toString(veh.getProductionYear());
+                        mileage = Double.toString(veh.getMileage());
+                        engineCapacity = Double.toString(veh.getEngineCapacity());
+
+                        writer.println(showroom.getVehicleAmount(veh) + "," + carShowroom + "," + mark + "," + model + "," + price + "," + productionYear + "," + mileage + "," + engineCapacity);
+                    }
+
+                    writer.flush();
+                    writer.close();
+                    file.close();
+
+                } catch (IOException exception) {
                     exception.getStackTrace();
                     throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
                 }
@@ -219,65 +287,175 @@ public class Controller {
         }
     }
 
-    public void onClickedExportButton(MouseEvent mouseEvent) {
+    public void onClickedImportButton() throws WorkOnFileException {
+        String text = IOComboBox.getValue();
+        String filename = "iocsv.csv";
+        String line;
+        Vehicle veh;
+
+        if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
+            try {
+                soldVehicles.clear();
+
+                FileReader file = new FileReader(filename);
+                BufferedReader reader = new BufferedReader(file);
+
+                while ((line = reader.readLine()) != null) {
+                    String[] row = line.split(",");
+
+                    veh = new Vehicle(row[2], row[3], E_ItemCondition.NEW, Double.parseDouble(row[4]), Integer.parseInt(row[5]), Double.parseDouble(row[6]), Double.parseDouble(row[7]));
+                    veh.setCarShowroom(row[1]);
+                    soldVehicles.add(veh);
+                }
+
+                reader.close();
+                file.close();
+
+            } catch (IOException exception) {
+                exception.getStackTrace();
+                throw new WorkOnFileException("Problems with loading the file " + filename, exception);
+            }
+        }
+        for (CarShowroom showroom : showroomsList) {
+            if (Objects.equals(text, showroom.getName())) {
+                try {
+                    for (Vehicle deleted : showroom.getVehicleMapSet()) {
+                        showroom.removeProduct(deleted.getModel());
+                    }
+
+                    FileReader file = new FileReader(filename);
+                    BufferedReader reader = new BufferedReader(file);
+
+                    while ((line = reader.readLine()) != null) {
+                        String[] row = line.split(",");
+
+                        for (int i = 0; i < Integer.parseInt(row[0]); ++i) {
+                            veh = new Vehicle(row[2], row[3], E_ItemCondition.NEW, Double.parseDouble(row[4]), Integer.parseInt(row[5]), Double.parseDouble(row[6]), Double.parseDouble(row[7]));
+                            veh.setCarShowroom(row[1]);
+                            showroom.addProduct(veh);
+                        }
+                    }
+
+                    reader.close();
+                    file.close();
+
+                } catch (IOException exception) {
+                    exception.getStackTrace();
+                    throw new WorkOnFileException("Problems with loading the file " + filename, exception);
+                }
+                break;
+            }
+        }
     }
 
-    public void onClickedImportButton(MouseEvent mouseEvent) {
+    public void closeProgram() throws WorkOnFileException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save ?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            String filename = "close.csv";
+            String carShowroom, mark, model, price, productionYear, mileage, engineCapacity;
+
+            for (CarShowroom showroom : showroomsList) {
+                try {
+                    FileWriter file = new FileWriter(filename, true);
+                    BufferedWriter buffer = new BufferedWriter(file);
+                    PrintWriter writer = new PrintWriter(buffer);
+
+                    for (Vehicle veh : showroom.getVehicleMapSet()) {
+                        carShowroom = veh.getCarShowroom();
+                        mark = veh.getMark();
+                        model = veh.getModel();
+                        price = Double.toString(veh.getPrice());
+                        productionYear = Integer.toString(veh.getProductionYear());
+                        mileage = Double.toString(veh.getMileage());
+                        engineCapacity = Double.toString(veh.getEngineCapacity());
+
+                        writer.println(showroom.getVehicleAmount(veh) + "," + carShowroom + "," + mark + "," + model + "," + price + "," + productionYear + "," + mileage + "," + engineCapacity);
+                    }
+
+                    writer.flush();
+                    writer.close();
+                    file.close();
+
+                } catch (IOException exception) {
+                    exception.getStackTrace();
+                    throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
+                }
+            }
+        }
     }
+
+
 
 
     @FXML
-    public void initialize() {
+    public void initialize() throws WorkOnFileException {
+        String filename = "init.csv";
+        String line, showroomName = "";
+        String[] row;
+        Vehicle veh;
+        CarShowroom showroom = null;
+
         /* objects */
-        Vehicle car1 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 20000, 2007, 350000., 40.0);
-        Vehicle car2 = new Vehicle("Opel", "Corsa", E_ItemCondition.USED, 27000, 2015, 200000, 35.3);
-        Vehicle car3 = new Vehicle("Mercedes", "A3", E_ItemCondition.USED, 35000, 2010, 250000.4, 38.2);
-        Vehicle car4 = new Vehicle("BMW", "Seria 3", E_ItemCondition.USED, 40000, 2016, 300000.8, 42.0);
-        Vehicle car5 = new Vehicle("BMW", "Seria 7", E_ItemCondition.USED, 55000, 2013, 400000, 38.5);
-        CarShowroom speed = new CarShowroom("SpeedDe", 8);
-        speed.addProduct(car1);
-        speed.addProduct(car2);
-        speed.addProduct(car3);
-        speed.addProduct(car4);
-        speed.addProduct(car5);
-        speed.addProduct(car3);
-        Vehicle car11 = new Vehicle("Ford", "Mondeo", E_ItemCondition.NEW, 100000, 2019, 1200.0, 35.0);
-        Vehicle car12 = new Vehicle("Ford", "Focus 1.6", E_ItemCondition.NEW, 120000, 2019, 2000, 35.3);
-        Vehicle car13 = new Vehicle("Ford", "Fiesta", E_ItemCondition.NEW, 115000, 2020, 2500.1, 36.2);
-        Vehicle car14 = new Vehicle("Ford", "Fiesta 1.5", E_ItemCondition.NEW, 150000, 2019, 1300.5, 40.1);
-        Vehicle car15 = new Vehicle("Hammer", "Hammve", E_ItemCondition.NEW, 300000, 2018, 1500, 45.5);
-        CarShowroom american = new CarShowroom("AmericanCar", 16);
-        american.addProduct(car11);
-        american.addProduct(car12);
-        american.addProduct(car12);
-        american.addProduct(car12);
-        american.addProduct(car13);
-        american.addProduct(car13);
-        american.addProduct(car14);
-        american.addProduct(car14);
-        american.addProduct(car15);
-        Vehicle maluch = new Vehicle("Fiat", "Maluch", E_ItemCondition.DAMAGED, 1000, 1988, 550000, 31.5);
-        Vehicle panda = new Vehicle("Fiat", "Panda", E_ItemCondition.USED, 1000, 2008, 250000, 41.5);
-        CarShowroom newCar = new CarShowroom("New Car", 25);
-        newCar.addProduct(maluch);
-        newCar.addProduct(maluch);
-        newCar.addProduct(panda);
+        try {
+            FileReader file = new FileReader(filename);
+            BufferedReader reader = new BufferedReader(file);
+
+            if ((line = reader.readLine()) != null) {
+                row = line.split(",");
+                showroomName = row[1];
+                showroom = new CarShowroom(showroomName, 25);
+
+                for (int i = 0; i < Integer.parseInt(row[0]); ++i) {
+                    veh = new Vehicle(row[2], row[3], E_ItemCondition.NEW, Double.parseDouble(row[4]), Integer.parseInt(row[5]), Double.parseDouble(row[6]), Double.parseDouble(row[7]));
+                    veh.setCarShowroom(row[1]);
+                    showroom.addProduct(veh);
+                }
+            }
+
+            while ((line = reader.readLine()) != null) {
+                row = line.split(",");
+
+                if (!Objects.equals(row[1], showroomName)) {
+                    showroomsList.add(showroom);
+                    showroomName = row[1];
+                    showroom = new CarShowroom(showroomName, 20);
+                }
+
+                for (int i = 0; i < Integer.parseInt(row[0]); ++i) {
+                    veh = new Vehicle(row[2], row[3], E_ItemCondition.NEW, Double.parseDouble(row[4]), Integer.parseInt(row[5]), Double.parseDouble(row[6]), Double.parseDouble(row[7]));
+                    veh.setCarShowroom(showroomName);
+                    assert showroom != null;
+                    showroom.addProduct(veh);
+                }
+            }
+            showroomsList.add(showroom);
+
+            reader.close();
+            file.close();
+
+        } catch (IOException exception) {
+            exception.getStackTrace();
+            throw new WorkOnFileException("Problems with loading the file " + filename, exception);
+        }
+
 
         /* for tooltip */
         upperTable.setRowFactory(tableview -> {
-            final TableRow<Vehicle> row = new TableRow<>();
+            final TableRow<Vehicle> rowT = new TableRow<>();
 
-            row.hoverProperty().addListener((observable -> {
-                final Vehicle veh = row.getItem();
+            rowT.hoverProperty().addListener((observable -> {
+                final Vehicle vehT = rowT.getItem();
 
-                if(row.isHover() && veh != null){
-                    upperTooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
+                if (rowT.isHover() && vehT != null) {
+                    upperTooltip.setText(vehT.getMark() + " " + vehT.getModel() + " " + vehT.getState() + " Mileage: " + vehT.getMileage() + " Capacity: " + vehT.getEngineCapacity());
                 }
             }));
-            return row;
+            return rowT;
         });
 
-        lowerTable.setRowFactory(tv -> new TableRow<Vehicle>() {
+        lowerTable.setRowFactory(tv -> new TableRow<>() {
 
             @Override
             public void updateItem(Vehicle veh, boolean empty) {
@@ -285,23 +463,21 @@ public class Controller {
                 if (veh == null) {
                     setTooltip(null);
                 } else {
-                    lowerTooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " " + veh.getMileage() + " " + veh.getEngineCapacity());
+                    lowerTooltip.setText(veh.getMark() + " " + veh.getModel() + " " + veh.getState() + " Mileage: " + veh.getMileage() + " Capacity: " + veh.getEngineCapacity());
                     setTooltip(lowerTooltip);
                 }
             }
         });
 
-        showroomsList = new ArrayList<>(Arrays.asList(speed, american, newCar));
-        reservations = new ArrayList<>();
 
         /* combo boxes */
-        ObservableList observableList = FXCollections.observableList(Arrays.asList("Default", speed.getName(), american.getName(), newCar.getName()));
+        ObservableList observableList = FXCollections.observableList(Arrays.asList("Default", showroomsList.get(0).getName(), showroomsList.get(1).getName(), showroomsList.get(2).getName()));
         showroomComboBox.getItems().clear();
         showroomComboBox.setItems(observableList);
         observableList = FXCollections.observableList(Arrays.asList("Model", "Price", "Production year"));
         sortComboBox.getItems().clear();
         sortComboBox.setItems(observableList);
-        observableList = FXCollections.observableList(Arrays.asList("Bought", speed.getName(), american.getName(), newCar.getName()));
+        observableList = FXCollections.observableList(Arrays.asList("Bought", showroomsList.get(0).getName(), showroomsList.get(1).getName(), showroomsList.get(2).getName()));
         IOComboBox.getItems().clear();
         IOComboBox.setItems(observableList);
 
