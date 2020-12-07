@@ -24,13 +24,13 @@ public class CarShowroomGUI extends JFrame {
     private JTextField showroomCapacityTextField;
     private JTextField carMarkTextField;
     private JTextField carModelTextField;
-    private JComboBox conditionComboBox;
+    private JComboBox<E_ItemCondition> conditionComboBox;
     private JTextField priceTextField;
     private JTextField productionYearTextField;
     private JTextField mileageTextField;
     private JTextField engineCapacityTextField;
     private JButton sortButton;
-    private JComboBox tableSelectionCombo;
+    private JComboBox<String> tableSelectionCombo;
 
 
     public CarShowroomGUI() throws HeadlessException {
@@ -83,8 +83,9 @@ public class CarShowroomGUI extends JFrame {
 
         List<CarShowroom> showrooms = new ArrayList<>(Arrays.asList(speed, american, newCar));
         mainTable.setModel(new CarShowroomTable(showrooms));
-        List<Vehicle> vehicles = new ArrayList<>();
-        final int[] carShowroomFlag = {-1};
+        List<Vehicle> vehiclesList = new ArrayList<>();
+        int[] carShowroomFlag = {-1};
+
 
         ListSelectionModel selectionModel = mainTable.getSelectionModel();
 
@@ -92,10 +93,11 @@ public class CarShowroomGUI extends JFrame {
             if (!e.getValueIsAdjusting()) {
                 carShowroomFlag[0] = selectionModel.getMinSelectionIndex();
 
-                vehicles.clear();
-                vehicles.addAll(showrooms.get(carShowroomFlag[0]).getVehicleMapSet());
-                AbstractTableModel newOne = new VehicleTable(vehicles);
-                secondTable.setModel(newOne);
+                if(carShowroomFlag[0] >= 0) {
+                    vehiclesList.clear();
+                    vehiclesList.addAll(showrooms.get(carShowroomFlag[0]).getVehicleMapSet());
+                    secondTable.setModel(new VehicleTable(vehiclesList));
+                }
             }
         });
 
@@ -108,28 +110,27 @@ public class CarShowroomGUI extends JFrame {
                 showrooms.add(new CarShowroom(name, capacity));
 
                 if (carShowroomFlag[0] >= 0) {
-                    AbstractTableModel newOne = new VehicleTable(vehicles);
-                    secondTable.setModel(newOne);
+                    secondTable.setModel(new VehicleTable(vehiclesList));
                 }
-                AbstractTableModel newOne = new CarShowroomTable(showrooms);
-                mainTable.setModel(newOne);
+                mainTable.setModel(new CarShowroomTable(showrooms));
             }
 
             if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles")) {
                 String mark = carMarkTextField.getText();
                 String model = carModelTextField.getText();
                 E_ItemCondition condition = (E_ItemCondition) conditionComboBox.getSelectedItem();
-                int price = Integer.parseInt(priceTextField.getText());
+                double price = Double.parseDouble(priceTextField.getText());
                 int productionYear = Integer.parseInt(productionYearTextField.getText());
-                int mileage = Integer.parseInt(mileageTextField.getText());
-                int capacity = Integer.parseInt(engineCapacityTextField.getText());
+                double mileage = Double.parseDouble(mileageTextField.getText());
+                double capacity = Double.parseDouble(engineCapacityTextField.getText());
 
                 Vehicle vehicle = new Vehicle(mark, model, condition, price, productionYear, mileage, capacity);
-                vehicles.add(vehicle);
-                showrooms.get(carShowroomFlag[0]).addProduct(vehicle);
+                if(carShowroomFlag[0] >= 0){
+                    vehiclesList.add(vehicle);
+                    showrooms.get(carShowroomFlag[0]).addProduct(vehicle);
+                }
 
-                AbstractTableModel newOne = new VehicleTable(vehicles);
-                secondTable.setModel(newOne);
+                secondTable.setModel(new VehicleTable(vehiclesList));
             }
         });
 
@@ -141,26 +142,23 @@ public class CarShowroomGUI extends JFrame {
                 showrooms.removeIf(t -> t.getName().equals(name));
 
                 secondTable.clearSelection();
-                AbstractTableModel newOne = new CarShowroomTable(showrooms);
-                mainTable.setModel(newOne);
+                mainTable.setModel(new CarShowroomTable(showrooms));
             }
 
             if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles")) {
                 String model = carModelTextField.getText();
 
-                if (vehicles.removeIf(t -> t.getModel().equals(model))) {
+                if (vehiclesList.removeIf(t -> t.getModel().equals(model))) {
                     showrooms.get(carShowroomFlag[0]).removeProduct(model);
                 }
-                AbstractTableModel newOne = new VehicleTable(vehicles);
-                secondTable.setModel(newOne);
+                secondTable.setModel(new VehicleTable(vehiclesList));
             }
         });
 
         sortButton.addActionListener(e -> {
-            AbstractTableModel model = (AbstractTableModel) mainTable.getModel();
             showrooms.sort(Comparator.comparing(CarShowroom::getCapacity));
 
-            mainTable.setModel(model);
+            mainTable.setModel(new CarShowroomTable(showrooms));
         });
     }
 }

@@ -53,11 +53,39 @@ public class Vehicle implements Comparable<Vehicle> {
         return engineCapacity;
     }
 
-    private final String mark;
-    private final String model;
-    private final E_ItemCondition state;
-    private final double price;
-    private final int productionYear;
-    private final double mileage;
-    private final double engineCapacity;
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setState(E_ItemCondition state) {
+        this.state = state;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setProductionYear(int productionYear) {
+        this.productionYear = productionYear;
+    }
+
+    public void setMileage(double mileage) {
+        this.mileage = mileage;
+    }
+
+    public void setEngineCapacity(double engineCapacity) {
+        this.engineCapacity = engineCapacity;
+    }
+
+    private String mark;
+    private String model;
+    private E_ItemCondition state;
+    private double price;
+    private int productionYear;
+    private double mileage;
+    private double engineCapacity;
 }

@@ -127,12 +127,20 @@ public class CarShowroom {
         return name;
     }
 
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Set<Vehicle> getVehicleMapSet() {
         return vehicleMap.keySet();
     }
 
-    private final String name;
-    private final Map<Vehicle, Integer> vehicleMap = new HashMap<>();
-    private final int capacity;
+    private String name;
+    private Map<Vehicle, Integer> vehicleMap = new HashMap<>();
+    private int capacity;
     private int amount = 0;
 }

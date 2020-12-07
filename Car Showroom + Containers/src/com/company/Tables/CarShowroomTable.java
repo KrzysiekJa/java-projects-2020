@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CarShowroomTable extends AbstractTableModel {
 
-    private final String[] columnNames = new String[]{"Name", "Capacity"};;
+    private final String[] columnNames = new String[]{"Name", "Capacity"};
     private List<CarShowroom> data;
 
 
@@ -36,9 +36,29 @@ public class CarShowroomTable extends AbstractTableModel {
         CarShowroom carShowroom = data.get(row);
 
         switch (col) {
-            case 0: return carShowroom.getName();
-            case 1: return carShowroom.getCapacity();
-            default: return null;
+            case 0:
+                return carShowroom.getName();
+            case 1:
+                return carShowroom.getCapacity();
+            default:
+                return null;
         }
+    }
+
+    @Override
+    public void setValueAt(Object value, int row, int col) {
+        CarShowroom carShowroom = data.get(row);
+
+        switch (col) {
+            case 0:
+                carShowroom.setName(value.toString());
+                break;
+            case 1:
+                if (value instanceof Integer) {
+                    carShowroom.setCapacity((Integer) value);
+                }
+                break;
+        }
+        fireTableRowsUpdated(row, col);
     }
 }
