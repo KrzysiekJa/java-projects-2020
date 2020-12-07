@@ -2,8 +2,23 @@ package CarShop.Classes;
 
 import java.io.Serializable;
 
-@VehicleAnnatation(carShowroom = "", mark = "", model = "", price = 0.0, productionYear = 0, mileage = 0.0, engineCapacity = 0.0)
+
 public class Vehicle implements Comparable<Vehicle>, Serializable {
+    @CSVAnnatation
+    private String carShowroom;
+    @CSVAnnatation
+    private final String mark;
+    @CSVAnnatation
+    private final String model;
+    private transient final E_ItemCondition state;
+    @CSVAnnatation
+    private final double price;
+    @CSVAnnatation
+    private final int productionYear;
+    @CSVAnnatation
+    private final double mileage;
+    @CSVAnnatation
+    private final double engineCapacity;
 
     public Vehicle(String mark, String model, E_ItemCondition state, double price, int productionYear,
                    double mileage, double engineCapacity) {
@@ -78,13 +93,4 @@ public class Vehicle implements Comparable<Vehicle>, Serializable {
                 ", engineCapacity=" + engineCapacity +
                 '}';
     }
-
-    private String carShowroom;
-    private final String mark;
-    private final String model;
-    private transient final E_ItemCondition state;
-    private final double price;
-    private final int productionYear;
-    private final double mileage;
-    private final double engineCapacity;
 }

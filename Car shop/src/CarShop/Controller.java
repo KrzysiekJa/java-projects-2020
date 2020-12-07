@@ -1,5 +1,6 @@
 package CarShop;
 
+import CarShop.Classes.CSVAnnatation;
 import CarShop.Classes.CarShowroom;
 import CarShop.Classes.E_ItemCondition;
 import CarShop.Classes.Vehicle;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -222,10 +224,12 @@ public class Controller {
     public void onClickedExportButton() throws WorkOnFileException {
         String text = IOComboBox.getValue();
         String filename = "iocsv.csv";
-        String carShowroom, mark, model, price, productionYear, mileage, engineCapacity;
+        StringBuilder result = new StringBuilder();
 
         if (Objects.equals(text, "Bought") && !soldVehicles.isEmpty()) {
             try {
+                result.append("0,");
+
                 PrintWriter writer = new PrintWriter(filename);
                 writer.close();
                 FileWriter file = new FileWriter(filename, true);
@@ -233,15 +237,19 @@ public class Controller {
                 writer = new PrintWriter(buffer);
 
                 for (Vehicle veh : soldVehicles) {
-                    carShowroom = veh.getCarShowroom();
-                    mark = veh.getMark();
-                    model = veh.getModel();
-                    price = Double.toString(veh.getPrice());
-                    productionYear = Integer.toString(veh.getProductionYear());
-                    mileage = Double.toString(veh.getMileage());
-                    engineCapacity = Double.toString(veh.getEngineCapacity());
+                    Field[] fields = veh.getClass().getFields();
 
-                    writer.println("0," + carShowroom + "," + mark + "," + model + "," + price + "," + productionYear + "," + mileage + "," + engineCapacity);
+                    for (int i = 1; i < fields.length; ++i) {
+                        if (fields[i].isAnnotationPresent(CSVAnnatation.class)) {
+                            result.append(fields[i].toString()).append(",");
+                        }
+                    }
+
+                    if (!Objects.equals(result.toString(), "0,")) {
+                        result.deleteCharAt(result.length() - 1);
+                        writer.println(result.toString());
+                        result = new StringBuilder("0,");
+                    }
                 }
 
                 writer.flush();
@@ -252,6 +260,7 @@ public class Controller {
                 exception.getStackTrace();
                 throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
             }
+            return;
         }
         for (CarShowroom showroom : showroomsList) {
             if (Objects.equals(text, showroom.getName())) {
@@ -263,15 +272,20 @@ public class Controller {
                     writer = new PrintWriter(buffer);
 
                     for (Vehicle veh : showroom.getVehicleMapSet()) {
-                        carShowroom = veh.getCarShowroom();
-                        mark = veh.getMark();
-                        model = veh.getModel();
-                        price = Double.toString(veh.getPrice());
-                        productionYear = Integer.toString(veh.getProductionYear());
-                        mileage = Double.toString(veh.getMileage());
-                        engineCapacity = Double.toString(veh.getEngineCapacity());
+                        Field[] fields = veh.getClass().getFields();
 
-                        writer.println(showroom.getVehicleAmount(veh) + "," + carShowroom + "," + mark + "," + model + "," + price + "," + productionYear + "," + mileage + "," + engineCapacity);
+                        for (Field field : fields) {
+                            if (field.isAnnotationPresent(CSVAnnatation.class)) {
+                                field.setAccessible(true);
+                                result.append(field.toString()).append(",");
+                            }
+                        }
+
+                        if (!Objects.equals(result.toString(), "")) {
+                            result.deleteCharAt(result.length() - 1);
+                            writer.println(result.toString());
+                            result = new StringBuilder();
+                        }
                     }
 
                     writer.flush();
@@ -387,8 +401,6 @@ public class Controller {
     }
 
 
-
-
     @FXML
     public void initialize() throws WorkOnFileException {
         String filename = "init.csv";
@@ -469,30 +481,35 @@ public class Controller {
             }
         });
 
-
         /* combo boxes */
-        ObservableList observableList = FXCollections.observableList(Arrays.asList("Default", showroomsList.get(0).getName(), showroomsList.get(1).getName(), showroomsList.get(2).getName()));
+        List<String> showroomsNamesList1 = new ArrayList<>();
+        for(CarShowroom elem: showroomsList){
+            showroomsNamesList1.add(elem.getName());
+        }
+        List<String> showroomsNamesList2 = new ArrayList<>(showroomsNamesList1);
+        showroomsNamesList1.add("Default");
+        ObservableList observableList = FXCollections.observableList(showroomsNamesList1);
         showroomComboBox.getItems().clear();
         showroomComboBox.setItems(observableList);
         observableList = FXCollections.observableList(Arrays.asList("Model", "Price", "Production year"));
         sortComboBox.getItems().clear();
         sortComboBox.setItems(observableList);
-        observableList = FXCollections.observableList(Arrays.asList("Bought", showroomsList.get(0).getName(), showroomsList.get(1).getName(), showroomsList.get(2).getName()));
+        showroomsNamesList2.add("Bought");
+        observableList = FXCollections.observableList(showroomsNamesList2);
         IOComboBox.getItems().clear();
         IOComboBox.setItems(observableList);
 
         /* table columns */
-        showroomUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("carShowroom"));
-        markUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("mark"));
-        modelUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("model"));
-        priceUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("price"));
-        productionYearUpper.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("productionYear"));
-        showroomLower.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("carShowroom"));
-        markLower.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("mark"));
-        modelLower.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("model"));
-        priceLower.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("price"));
-        productionYearLower.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("productionYear"));
-
+        showroomUpper.setCellValueFactory(new PropertyValueFactory<>("carShowroom"));
+        markUpper.setCellValueFactory(new PropertyValueFactory<>("mark"));
+        modelUpper.setCellValueFactory(new PropertyValueFactory<>("model"));
+        priceUpper.setCellValueFactory(new PropertyValueFactory<>("price"));
+        productionYearUpper.setCellValueFactory(new PropertyValueFactory<>("productionYear"));
+        showroomLower.setCellValueFactory(new PropertyValueFactory<>("carShowroom"));
+        markLower.setCellValueFactory(new PropertyValueFactory<>("mark"));
+        modelLower.setCellValueFactory(new PropertyValueFactory<>("model"));
+        priceLower.setCellValueFactory(new PropertyValueFactory<>("price"));
+        productionYearLower.setCellValueFactory(new PropertyValueFactory<>("productionYear"));
     }
 
 }
