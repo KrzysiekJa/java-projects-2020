@@ -1,12 +1,6 @@
 package com.company;
 
-import com.company.Classes.CarShowroom;
-import com.company.Classes.CarShowroomContainer;
-import com.company.Classes.E_ItemCondition;
-import com.company.Classes.Vehicle;
-
 import javax.swing.*;
-import java.util.stream.Collectors;
 
 public class CarshowroomApp {
 

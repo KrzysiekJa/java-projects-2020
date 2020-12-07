@@ -7,7 +7,6 @@ import com.company.Classes.Vehicle;
 import com.company.Tables.VehicleTable;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -109,9 +108,6 @@ public class CarShowroomGUI extends JFrame {
 
                 showrooms.add(new CarShowroom(name, capacity));
 
-                if (carShowroomFlag[0] >= 0) {
-                    secondTable.setModel(new VehicleTable(vehiclesList));
-                }
                 mainTable.setModel(new CarShowroomTable(showrooms));
             }
 
@@ -134,6 +130,7 @@ public class CarShowroomGUI extends JFrame {
             }
         });
 
+        // badly constructed
         removeButton.addActionListener(e -> {
 
             if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Car showroom")) {
