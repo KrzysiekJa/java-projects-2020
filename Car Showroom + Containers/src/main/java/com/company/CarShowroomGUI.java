@@ -86,7 +86,7 @@ public class CarShowroomGUI extends JFrame {
                 mainTable.setModel(new CarShowroomTable(showrooms.get()));
             }
 
-            if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles")) {
+            if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles") && !selectionModel.isSelectionEmpty()) {
                 String mark = carMarkTextField.getText();
                 String model = carModelTextField.getText();
                 double price = Double.parseDouble(priceTextField.getText());
@@ -113,7 +113,7 @@ public class CarShowroomGUI extends JFrame {
                 mainTable.setModel(new CarShowroomTable(showrooms.get()));
             }
 
-            if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles")) {
+            if (Objects.equals(tableSelectionCombo.getSelectedItem(), "Vehicles") && !selectionModel.isSelectionEmpty()) {
                 String model = carModelTextField.getText();
 
                 vehicleDAO.deleteByModel(model);
