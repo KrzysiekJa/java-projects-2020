@@ -4,7 +4,7 @@
 2. Algorithms and testing  -> work with typical algorithms and testing them with use of JUnit 5.
 3. Car Showroom + Containers  -> Swing application using Hibernate for database management.
 4. Car shop  -> javaFX application, using serialization for data management.
-5. CarShoproomApp  -> SpringBoot and Hibernate application.
+5. CarShoproomApp  -> SpringBoot and Hibernate webapplication.
 
 hibernate.sql -> database project
 ```
