@@ -4,6 +4,7 @@ import com.company.Classes.Vehicle;
 import com.company.Exceptetions.HibernateConnectionException;
 import com.company.Hibernate.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
@@ -108,14 +109,16 @@ public class VehicleDAO implements DAO<Vehicle> {
     @Override
     public void delete(Vehicle entity) {
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
 
         try {
-            session.beginTransaction();
+            tx = session.beginTransaction();
             session.delete(entity);
-            session.getTransaction().commit();
+            tx.commit();
         } catch (HibernateConnectionException exception) {
-            if ( session.getTransaction().isActive() ) {
-                session.getTransaction().rollback();
+            assert tx != null;
+            if ( tx.isActive() ) {
+                tx.rollback();
             }
             throw new HibernateConnectionException("Problems during operations.");
         }finally {

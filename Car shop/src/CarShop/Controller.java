@@ -1,6 +1,6 @@
 package CarShop;
 
-import CarShop.Classes.CSVAnnatation;
+import CarShop.Classes.CSVAnnotation;
 import CarShop.Classes.CarShowroom;
 import CarShop.Classes.E_ItemCondition;
 import CarShop.Classes.Vehicle;
@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+
+
 
 public class Controller {
 
@@ -59,17 +62,30 @@ public class Controller {
     private ComboBox<String> IOComboBox;
 
 
+
+
     public void onActionShowroomComboBox() {
-        upperTable.getItems().clear();
         String text = showroomComboBox.getValue();
+        boolean flag = true;
 
         for (CarShowroom showroom : showroomsList) {
             if (Objects.equals(text, "Default")) {
+                if(flag){
+                    flag = false;
+                    upperTable.getItems().clear();
+                }
                 for (Vehicle veh : showroom.getVehicleMapSet()) {
                     upperTable.getItems().add(veh);
                 }
             }
+            if (Objects.equals(text, "Bought")) {
+                lowerTable.getItems().clear();
+                for (Vehicle veh : soldVehicles) {
+                    lowerTable.getItems().add(veh);
+                }
+            }
             if (Objects.equals(text, showroom.getName())) {
+                upperTable.getItems().clear();
                 for (Vehicle veh : showroom.getVehicleMapSet()) {
                     upperTable.getItems().add(veh);
                 }
@@ -236,19 +252,20 @@ public class Controller {
                 BufferedWriter buffer = new BufferedWriter(file);
                 writer = new PrintWriter(buffer);
 
-                for (Vehicle veh : soldVehicles) {
-                    Field[] fields = veh.getClass().getFields();
+                for (int i = 0; i < soldVehicles.size(); ++i) {
+                    Field[] fieldsList = soldVehicles.get(i).getClass().getDeclaredFields();
 
-                    for (int i = 1; i < fields.length; ++i) {
-                        if (fields[i].isAnnotationPresent(CSVAnnatation.class)) {
-                            result.append(fields[i].toString()).append(",");
+                    for (Field field: fieldsList) {
+                        if (field.isAnnotationPresent(CSVAnnotation.class)) {
+                            field.setAccessible(true);
+                            result.append(field.get(soldVehicles.get(i)).toString()).append(",");
                         }
                     }
 
                     if (!Objects.equals(result.toString(), "0,")) {
                         result.deleteCharAt(result.length() - 1);
                         writer.println(result.toString());
-                        result = new StringBuilder("0,");
+                        result = new StringBuilder(String.valueOf(i+1)).append(",");
                     }
                 }
 
@@ -256,7 +273,7 @@ public class Controller {
                 writer.close();
                 file.close();
 
-            } catch (IOException exception) {
+            } catch (IOException | IllegalAccessException exception) {
                 exception.getStackTrace();
                 throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
             }
@@ -265,26 +282,30 @@ public class Controller {
         for (CarShowroom showroom : showroomsList) {
             if (Objects.equals(text, showroom.getName())) {
                 try {
+                    int i = 0;
+                    result.append("0,");
+
                     PrintWriter writer = new PrintWriter(filename);
                     writer.close();
                     FileWriter file = new FileWriter(filename, true);
                     BufferedWriter buffer = new BufferedWriter(file);
                     writer = new PrintWriter(buffer);
 
-                    for (Vehicle veh : showroom.getVehicleMapSet()) {
-                        Field[] fields = veh.getClass().getFields();
+                    for (Vehicle veh: showroom.getVehicleMapSet()) {
+                        Field[] fieldsList = veh.getClass().getDeclaredFields();
 
-                        for (Field field : fields) {
-                            if (field.isAnnotationPresent(CSVAnnatation.class)) {
+                        for (Field field: fieldsList) {
+                            if (field.isAnnotationPresent(CSVAnnotation.class)) {
                                 field.setAccessible(true);
-                                result.append(field.toString()).append(",");
+                                result.append(field.get(veh).toString()).append(",");
                             }
                         }
 
-                        if (!Objects.equals(result.toString(), "")) {
+                        if (!Objects.equals(result.toString(), "0,")) {
                             result.deleteCharAt(result.length() - 1);
                             writer.println(result.toString());
-                            result = new StringBuilder();
+                            result = new StringBuilder(String.valueOf(i+1)).append(",");
+                            ++i;
                         }
                     }
 
@@ -292,7 +313,7 @@ public class Controller {
                     writer.close();
                     file.close();
 
-                } catch (IOException exception) {
+                } catch (IOException | IllegalAccessException exception) {
                     exception.getStackTrace();
                     throw new WorkOnFileException("Problems with saving to the file " + filename, exception);
                 }
@@ -409,6 +430,7 @@ public class Controller {
         Vehicle veh;
         CarShowroom showroom = null;
 
+
         /* objects */
         try {
             FileReader file = new FileReader(filename);
@@ -481,23 +503,26 @@ public class Controller {
             }
         });
 
+
         /* combo boxes */
-        List<String> showroomsNamesList1 = new ArrayList<>();
+        List<String> showroomsNamesList = new ArrayList<>();
         for(CarShowroom elem: showroomsList){
-            showroomsNamesList1.add(elem.getName());
+            showroomsNamesList.add(elem.getName());
         }
-        List<String> showroomsNamesList2 = new ArrayList<>(showroomsNamesList1);
-        showroomsNamesList1.add("Default");
-        ObservableList observableList = FXCollections.observableList(showroomsNamesList1);
+        List<String> showroomsNamesListIO = new ArrayList<>(showroomsNamesList);
+        showroomsNamesList.add("Default");
+        showroomsNamesList.add("Bought");
+        ObservableList observableList = FXCollections.observableList(showroomsNamesList);
         showroomComboBox.getItems().clear();
         showroomComboBox.setItems(observableList);
         observableList = FXCollections.observableList(Arrays.asList("Model", "Price", "Production year"));
         sortComboBox.getItems().clear();
         sortComboBox.setItems(observableList);
-        showroomsNamesList2.add("Bought");
-        observableList = FXCollections.observableList(showroomsNamesList2);
+        showroomsNamesListIO.add("Bought");
+        observableList = FXCollections.observableList(showroomsNamesListIO);
         IOComboBox.getItems().clear();
         IOComboBox.setItems(observableList);
+
 
         /* table columns */
         showroomUpper.setCellValueFactory(new PropertyValueFactory<>("carShowroom"));

@@ -12,8 +12,9 @@ public class SquareCreator {
 
         System.out.println("Please put square' side value:");
 
+
         try{
-            side = scanner.nextDouble();
+            side = Double.parseDouble(scanner.nextLine());
 
         } catch(Exception exc){
             System.out.println("Thrown exception" + exc);

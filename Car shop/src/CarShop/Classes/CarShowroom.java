@@ -6,6 +6,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CarShowroom implements Serializable {
+    private final String name;
+    private final Map<Vehicle, Integer> vehicleMap = new HashMap<>();
+    private final int capacity;
+    private int amount = 0;
+
 
     public CarShowroom(String name, int capacity) {
         super();
@@ -142,9 +147,4 @@ public class CarShowroom implements Serializable {
     public String toString() {
         return "CarShowroom{" + "name='" + name + '\'' + ", vehicleMap=" + vehicleMap + ", capacity=" + capacity + ", amount=" + amount + '}';
     }
-
-    private final String name;
-    private final Map<Vehicle, Integer> vehicleMap = new HashMap<>();
-    private final int capacity;
-    private int amount = 0;
 }

@@ -15,14 +15,14 @@ public class PrismCreator {
         Scanner scanner = new Scanner(System.in);
         double high = 0.0;
 
-        System.out.println("Please put the prism' hight value:");
 
+        System.out.println("Please put the prism' height value:");
 
         try{
-            high = scanner.nextDouble();
+            high = Double.parseDouble(scanner.nextLine());
         }
         catch(Exception exc) {
-            System.out.println("Thrown exception" + exc);
+            System.out.println("Thrown exception: " + exc);
         }
         scanner.close();
 

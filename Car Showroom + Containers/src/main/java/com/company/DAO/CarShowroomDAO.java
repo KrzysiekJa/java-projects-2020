@@ -1,9 +1,9 @@
 package com.company.DAO;
 
 import com.company.Classes.CarShowroom;
-import com.company.Classes.Vehicle;
 import com.company.Exceptetions.HibernateConnectionException;
 import com.company.Hibernate.HibernateUtil;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
 
@@ -89,15 +89,17 @@ public class CarShowroomDAO implements DAO<CarShowroom> {
     @Override
     public void delete(CarShowroom entity) {
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
 
         try {
-            session.beginTransaction();
+            tx = session.beginTransaction();
             entity.getVehicleList().forEach(session::delete);
             session.delete(entity);
-            session.getTransaction().commit();
+            tx.commit();
         } catch (HibernateConnectionException exception) {
-            if (session.getTransaction().isActive()) {
-                session.getTransaction().rollback();
+            assert tx != null;
+            if (tx.isActive()) {
+                tx.rollback();
             }
             throw new HibernateConnectionException("Problems during operations.");
         } finally {

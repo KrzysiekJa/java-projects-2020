@@ -10,38 +10,40 @@ public class ExtraSwitch {
     public OutputClass decisionSwitch(){
         Figure figure   = null;
         Prism prism     = null;
-        String decision, decision2;
+        String decisionFig, decisionDim;
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Choose the figure: triangle / circle / square");
-        decision = scanner.nextLine();
+        decisionFig = String.valueOf(scanner.nextLine());
         System.out.println("Choose object: 2D, 3D");
-        decision2 = scanner.nextLine();
+        decisionDim = String.valueOf(scanner.nextLine());
 
 
-        if(Objects.equals(decision, "triangle")){
+        if(Objects.equals(decisionFig, "triangle") || Objects.equals(decisionFig, "t")){
             TriangleCreator creator = new TriangleCreator();
             figure = creator.createTriangle();
         }
-        if(Objects.equals(decision, "circle")){
+        if(Objects.equals(decisionFig, "circle") || Objects.equals(decisionFig, "c")){
             CircleCreator creator = new CircleCreator();
             figure = creator.createCircle();
         }
-        if(Objects.equals(decision, "square")){
+        if(Objects.equals(decisionFig, "square") || Objects.equals(decisionFig, "s")){
             SquareCreator creator = new SquareCreator();
             figure = creator.createSquare();
         }
 
 
-        switch(decision2){
+        switch(decisionDim){
             case "2D":
             case "2d":
+            case "2":
                 prism = null;
 
                 break;
 
             case "3D":
             case "3d":
+            case "3":
                 PrismCreator creator = new PrismCreator();
                 prism = creator.createPrism(figure);
 
@@ -50,9 +52,11 @@ public class ExtraSwitch {
             default:
                 break;
         }
+        scanner.close();
 
-        return new OutputClass(decision, figure, prism);
+        return new OutputClass(decisionFig, figure, prism);
     }
+
 
 
     public void printSwitch(OutputClass input){
@@ -70,7 +74,7 @@ public class ExtraSwitch {
             ((Square)input.getFig()).print();
         }
         else {
-            System.out.println("No figure and no prism put.");
+            System.out.println("No figure and no prism has been put.");
         }
     }
 }

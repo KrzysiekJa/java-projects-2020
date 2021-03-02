@@ -14,7 +14,7 @@ public class CircleCreator {
 
 
         try{
-            radius = scanner.nextDouble();
+            radius = Double.parseDouble(scanner.nextLine());
 
         } catch(Exception exc){
             System.out.println("Thrown exception" + exc);

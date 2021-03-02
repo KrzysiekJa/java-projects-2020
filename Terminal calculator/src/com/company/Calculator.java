@@ -16,6 +16,8 @@ public class Calculator {
         decisionSwitchFunction();
     }
 
+
+
     private void decisionSwitchFunction() {
         Scanner scanner = new Scanner(System.in);
         String decision;
@@ -25,8 +27,7 @@ public class Calculator {
             ExtraSwitch extraSwitch = new ExtraSwitch();
 
             System.out.println("Choose: 'fig' for figure/object computation / 'print' for print figure's data / 'exit'");
-            scanner.hasNextLine();
-            decision = scanner.nextLine();
+            decision = String.valueOf(scanner.nextLine());
 
                 switch (decision) {
                     case "f":

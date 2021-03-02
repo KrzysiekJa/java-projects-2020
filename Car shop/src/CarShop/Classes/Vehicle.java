@@ -4,20 +4,20 @@ import java.io.Serializable;
 
 
 public class Vehicle implements Comparable<Vehicle>, Serializable {
-    @CSVAnnatation
+    @CSVAnnotation
     private String carShowroom;
-    @CSVAnnatation
+    @CSVAnnotation
     private final String mark;
-    @CSVAnnatation
+    @CSVAnnotation
     private final String model;
     private transient final E_ItemCondition state;
-    @CSVAnnatation
+    @CSVAnnotation
     private final double price;
-    @CSVAnnatation
+    @CSVAnnotation
     private final int productionYear;
-    @CSVAnnatation
+    @CSVAnnotation
     private final double mileage;
-    @CSVAnnatation
+    @CSVAnnotation
     private final double engineCapacity;
 
     public Vehicle(String mark, String model, E_ItemCondition state, double price, int productionYear,

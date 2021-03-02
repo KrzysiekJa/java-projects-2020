@@ -16,7 +16,7 @@
           <TableColumn fx:id="markUpper" prefWidth="71.0" text="Mark" />
             <TableColumn fx:id="modelUpper" prefWidth="75.0" text="Model" />
             <TableColumn fx:id="priceUpper" prefWidth="74.0" text="Price" />
-            <TableColumn fx:id="productionYearUpper" prefWidth="103.0" text="Production year" />
+            <TableColumn fx:id="productionYearUpper" prefWidth="101.0" text="Production year" />
         </columns>
          <tooltip>
             <Tooltip fx:id="upperTooltip" text="Empty Tooltip" />
@@ -28,7 +28,7 @@
           <TableColumn fx:id="markLower" prefWidth="70.0" text="Mark" />
             <TableColumn fx:id="modelLower" prefWidth="75.0" text="Model" />
             <TableColumn fx:id="priceLower" prefWidth="74.0" text="Price" />
-            <TableColumn fx:id="productionYearLower" prefWidth="103.0" text="Production year" />
+            <TableColumn fx:id="productionYearLower" prefWidth="101.0" text="Production year" />
         </columns>
          <tooltip>
             <Tooltip fx:id="lowerTooltip" text="Empty Tooltip" />
