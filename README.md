@@ -2,9 +2,9 @@
 ```
 1. Terminal calculator.
 2. Algorithms and testing  -> work with typical algorithms and testing them with use of JUnit 5.
-3. Car Showroom + Containers  -> Swing application using Hibernate for database management.
+3. Car Showroom + Containers  -> Swing application using Hibernate for database management (management by Maven).
 4. Car shop  -> javaFX application, using serialization for data management.
-5. CarShoproomApp  -> SpringBoot and Hibernate webapplication.
+5. CarShoproomApp  -> SpringBoot and Hibernate webapplication (management by Maven).
 
 hibernate.sql -> database project
 ```
