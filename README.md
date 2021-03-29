@@ -8,6 +8,10 @@
 
 hibernate.sql -> database project
 ```
+## Technology:
+```
+- java 11(2).
+```
 
 ## 3.
 ![alt text](https://github.com/KrzysiekJa/java-projects-2020/blob/master/pictures/swing.png "swing")
